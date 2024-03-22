@@ -1,5 +1,6 @@
+from calendar import c
 import logging
-import requests
+import http.client
 import os
 
 logger = logging.getLogger(__name__)
@@ -7,15 +8,20 @@ logger.setLevel(logging.INFO)
 
 
 def run(event, context):
-    # Make a request to TextATask API    
-    url = f"https://${os.environ['PATH']}.execute-api.us-east-1.amazonaws.com/tasks/incomplete"
+    # Make a request to TextATask API
+    conn = http.client.HTTPSConnection(f"https://${os.environ['PATH']}.execute-api.us-east-1.amazonaws.com")
+    conn.request("GET", "/tasks/incomplete")
     
-    response = requests.get(url)
+    response = conn.getresponse()
     
-    if response.status_code == 200:
-        logger.info("Request was successful")
-        return response.json()
+    if response.status == 200:
+        print(response.json())
+        data = response.read()
+        logger.info("Request successful")
+        return data.decode("utf-8")
     else:
         logger.error("Request failed")
-        return {"statusCode": response.status_code, "body": response.text}
+        return {"statusCode": response.status, "body": response.reason}
+    
+    conn.close()
         
