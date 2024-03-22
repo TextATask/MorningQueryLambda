@@ -10,13 +10,8 @@ provider:
   runtime: python3.9
 
 functions:
-  rateHandler:
-    handler: handler.run
-    events:
-      # Invoke Lambda function every minute
-      - schedule: rate(1 minute)
   cronHandler:
     handler: handler.run
     events:
-      # Invoke Lambda function every 2nd minute from Mon-Fri
-      - schedule: cron(0/2 * ? * MON-FRI *)
+      # Invoke Lambda function every day at 2:00 AM (UTC)
+      - schedule: cron(0 2 * * * *)
