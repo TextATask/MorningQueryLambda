@@ -1,11 +1,26 @@
-import datetime
 import logging
+import http.client
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 def run(event, context):
-    current_time = datetime.datetime.now().time()
-    name = context.function_name
-    logger.info("Your cron function " + name + " ran at " + str(current_time))
+    # Make a request to TextATask API
+    conn = http.client.HTTPSConnection(f"{os.environ['PATH']}.execute-api.us-east-1.amazonaws.com")
+    conn.request("GET", "/tasks/incomplete")
+    
+    response = conn.getresponse()
+    
+    if response.status == 200:
+        print(response)
+        data = response.read()
+        logger.info("Request successful")
+        return data.decode("utf-8")
+    else:
+        logger.error("Request failed")
+        return {"statusCode": response.status, "body": response.reason}
+    
+    conn.close()
+        
