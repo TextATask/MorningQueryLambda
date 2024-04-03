@@ -26,13 +26,11 @@ def run(event, context):
     if response.status == 200:
         data = response.read()
         logger.info("Request successful")
-        body = data.decode("utf-8")
+        body = json.loads(data.decode("utf-8"))
         tasks = []
         for task in body:
-            task_details = json.loads(task)
-            tasks.append(task_details["id"], task_details["text"])
-            #
-        message = f"Good Morning, These are your incomplete tasks for today: \n{tasks}"
+            tasks.append(f"- ID:{task['id']}, task:{task['text']}")
+        message = f"Good Morning, Here is the list of incomplete tasks for today: \n{tasks}"
     else:
         logger.error("Request failed")
         return {"statusCode": response.status, "body": response.reason}
