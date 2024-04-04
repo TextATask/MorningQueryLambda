@@ -30,7 +30,7 @@ def run(event, context):
         tasks = []
         for task in body:
             tasks.append(f"- ID:{task['id']}, task:{task['text']}")
-        message = f"Good Morning, Here is the list of incomplete tasks for today: \n{tasks}"
+        message = f"Good Morning, Here is your list of incomplete tasks for today: \n{'\n'.join(tasks)}"
     else:
         logger.error("Request failed")
         return {"statusCode": response.status, "body": response.reason}
