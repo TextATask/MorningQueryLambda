@@ -29,8 +29,9 @@ def run(event, context):
         body = json.loads(data.decode("utf-8"))
         tasks = []
         for task in body:
-            tasks.append(f"- ID:{task['id']}, task:{task['text']}")
-        message = f"Good Morning, Here is your list of incomplete tasks for today: \n{'\n'.join(tasks)}"
+            tasks.append(f"- ID: {task['id']}, task: {task['text']}")
+        formatted_tasks = '\n'.join(tasks)
+        message = f"Good Morning, These are your currently outstanding tasks: \n{formatted_tasks}"
     else:
         logger.error("Request failed")
         return {"statusCode": response.status, "body": response.reason}
